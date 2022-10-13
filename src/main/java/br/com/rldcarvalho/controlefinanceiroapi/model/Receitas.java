@@ -1,4 +1,4 @@
-package br.com.rldcarvalho.controlefinanceiroapi.modelo.entity;
+package br.com.rldcarvalho.controlefinanceiroapi.model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -14,5 +14,19 @@ public class Receitas {
     private BigDecimal valor;
     private LocalDate data;
 
+    public Long getId() {
+        return id;
+    }
 
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public BigDecimal getValor() {
+        return valor;
+    }
+
+    public LocalDate getData() {
+        return data;
+    }
 }
