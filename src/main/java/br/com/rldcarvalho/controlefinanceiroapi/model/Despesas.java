@@ -1,4 +1,4 @@
-package br.com.rldcarvalho.controlefinanceiroapi.modelo.entity;
+package br.com.rldcarvalho.controlefinanceiroapi.model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
