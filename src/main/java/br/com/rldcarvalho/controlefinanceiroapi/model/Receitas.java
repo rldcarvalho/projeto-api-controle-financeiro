@@ -14,6 +14,15 @@ public class Receitas {
     private BigDecimal valor;
     private LocalDate data;
 
+    public Receitas(String descricao, BigDecimal valor, LocalDate data) {
+        this.descricao = descricao;
+        this.valor = valor;
+        this.data = data;
+    }
+
+    public Receitas() {
+    }
+
     public Long getId() {
         return id;
     }
