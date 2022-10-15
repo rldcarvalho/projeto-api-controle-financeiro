@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-public class Receitas {
+public class Receita {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,13 +14,13 @@ public class Receitas {
     private BigDecimal valor;
     private LocalDate data;
 
-    public Receitas(String descricao, BigDecimal valor, LocalDate data) {
+    public Receita(String descricao, BigDecimal valor, LocalDate data) {
         this.descricao = descricao;
         this.valor = valor;
         this.data = data;
     }
 
-    public Receitas() {
+    public Receita() {
     }
 
     public Long getId() {

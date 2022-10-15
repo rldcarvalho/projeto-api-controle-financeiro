@@ -1,45 +1,64 @@
 package br.com.rldcarvalho.controlefinanceiroapi.controller;
 
-import br.com.rldcarvalho.controlefinanceiroapi.controller.dto.ReceitasDto;
-import br.com.rldcarvalho.controlefinanceiroapi.controller.form.ReceitasForm;
-import br.com.rldcarvalho.controlefinanceiroapi.model.Receitas;
-import br.com.rldcarvalho.controlefinanceiroapi.repository.ReceitasRepository;
+import br.com.rldcarvalho.controlefinanceiroapi.controller.dto.ReceitaDto;
+import br.com.rldcarvalho.controlefinanceiroapi.controller.form.ReceitaForm;
+import br.com.rldcarvalho.controlefinanceiroapi.model.Receita;
+import br.com.rldcarvalho.controlefinanceiroapi.repository.ReceitaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/receitas")
 public class ReceitasController {
 
     @Autowired
-    private ReceitasRepository receitasRepository;
+    private ReceitaRepository receitaRepository;
 
     @PostMapping
     @Transactional
-    public void cadastrar(@RequestBody @Valid ReceitasForm receitasForm, UriComponentsBuilder uriBuilder){
-        Receitas receita = receitasForm.converter();
+    public ResponseEntity cadastrar(@RequestBody @Valid ReceitaForm receitaForm){
+        Receita receita = receitaForm.converter();
 
-        //TODO: verifica receita duplicada
+        if(verificaSeReceitaDuplicada(receita)){
+            return ResponseEntity.badRequest().body("Receita com descrição idêntica existente no mesmo mês");
+        }
 
-        receitasRepository.save(receita);
+        receitaRepository.save(receita);
+        return ResponseEntity.ok("Receita cadastrada com sucesso");
     }
 
+    public boolean verificaSeReceitaDuplicada(Receita receitaNova){
 
-//    @PostMapping
-//    @Transactional
-//    public ResponseEntity<TopicoDto> cadastrar(@RequestBody @Valid TopicoForm form, UriComponentsBuilder uriBuilder){
-//        Topico topico =  form.converter(cursoRepository);
-//        topicoRepository.save(topico);
-//
-//        URI uri = uriBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
-//        return ResponseEntity.created(uri).body(new TopicoDto(topico));
-//    }
+        LocalDate dataInicial = receitaNova.getData().with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate dataFinal = receitaNova.getData().with(TemporalAdjusters.lastDayOfMonth());
+
+        return receitaRepository
+                .findByDescricaoAndDataBetween(receitaNova.getDescricao(), dataInicial, dataFinal)
+                .isPresent();
+    }
+
+    public List<ReceitaDto> buscaTodasReceitas(){
+
+        List<Receita> receitas = receitaRepository.findAll();
+
+        return ReceitaDto.converter(receitas);
+    }
+
+    @GetMapping
+    public void testar(){
+        ReceitaForm receitaForm = new ReceitaForm("Salário", "2500.00", "08/09/2022");
+        Receita receita = receitaForm.converter();
+        System.out.println(verificaSeReceitaDuplicada(receita));
+
+    }
+
 }

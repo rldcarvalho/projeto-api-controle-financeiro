@@ -1,8 +1,7 @@
 package br.com.rldcarvalho.controlefinanceiroapi.controller.form;
 
-import br.com.rldcarvalho.controlefinanceiroapi.model.Receitas;
+import br.com.rldcarvalho.controlefinanceiroapi.model.Receita;
 import com.sun.istack.NotNull;
-import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
@@ -10,7 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class ReceitasForm {
+public class ReceitaForm {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     @NotNull @NotEmpty
@@ -21,6 +20,12 @@ public class ReceitasForm {
     @Pattern(regexp = "^([0-2][0-9]||3[0-1])/(0[0-9]||1[0-2])/([0-9][0-9])?[0-9][0-9]$")
     @NotNull @NotEmpty
     private String data;
+
+    public ReceitaForm(String descricao, String valor, String data) {
+        this.descricao = descricao;
+        this.valor = valor;
+        this.data = data;
+    }
 
     public String getDescricao() {
         return descricao;
@@ -46,10 +51,10 @@ public class ReceitasForm {
         this.data = data;
     }
 
-    public Receitas converter(){
+    public Receita converter(){
         BigDecimal valorFormatado = new BigDecimal(this.valor);
         LocalDate dataFormatada = LocalDate.parse(this.data, formatter);
 
-        return new Receitas(this.descricao, valorFormatado, dataFormatada);
+        return new Receita(this.descricao, valorFormatado, dataFormatada);
     }
 }
