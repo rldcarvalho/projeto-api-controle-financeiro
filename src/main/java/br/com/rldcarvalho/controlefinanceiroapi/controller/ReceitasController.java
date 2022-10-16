@@ -7,7 +7,6 @@ import br.com.rldcarvalho.controlefinanceiroapi.repository.ReceitaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -56,6 +55,17 @@ public class ReceitasController {
     @GetMapping
     public List<ReceitaDto> mostraReceita(){
         return buscaTodasReceitas();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ReceitaDto> mostraReceitaPorId(@PathVariable Long id){
+        Optional<Receita> receita = receitaRepository.findById(id);
+
+        if (!receita.isPresent()){
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(new ReceitaDto(receita.get()));
     }
 
 }

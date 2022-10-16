@@ -8,5 +8,6 @@ import java.util.Optional;
 
 public interface ReceitaRepository extends JpaRepository<Receita, Long> {
 
-    public Optional<Receita> findByDescricaoAndDataBetween(String descricao, LocalDate startDate, LocalDate endDate);
+    Optional<Receita> findByDescricaoAndDataBetween(String descricao, LocalDate startDate, LocalDate endDate);
+    Optional<Receita> findById(Long id);
 }
