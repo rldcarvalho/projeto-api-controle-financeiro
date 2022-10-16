@@ -54,11 +54,8 @@ public class ReceitasController {
     }
 
     @GetMapping
-    public void testar(){
-        ReceitaForm receitaForm = new ReceitaForm("Salário", "2500.00", "08/09/2022");
-        Receita receita = receitaForm.converter();
-        System.out.println(verificaSeReceitaDuplicada(receita));
-
+    public List<ReceitaDto> mostraReceita(){
+        return buscaTodasReceitas();
     }
 
 }
