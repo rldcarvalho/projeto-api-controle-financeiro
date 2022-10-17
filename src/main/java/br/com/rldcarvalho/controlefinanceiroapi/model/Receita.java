@@ -47,4 +47,5 @@ public class Receita {
     public LocalDate getData() {
         return data;
     }
+
 }
