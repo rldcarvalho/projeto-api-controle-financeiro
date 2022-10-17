@@ -1,5 +1,6 @@
 package br.com.rldcarvalho.controlefinanceiroapi.controller.form;
 
+import br.com.rldcarvalho.controlefinanceiroapi.controller.dto.ReceitaDto;
 import br.com.rldcarvalho.controlefinanceiroapi.model.Receita;
 import com.sun.istack.NotNull;
 
@@ -51,10 +52,17 @@ public class ReceitaForm {
         this.data = data;
     }
 
-    public Receita converter(){
+    public Receita converterParaModelo(){
         BigDecimal valorFormatado = new BigDecimal(this.valor);
         LocalDate dataFormatada = LocalDate.parse(this.data, formatter);
 
         return new Receita(this.descricao, valorFormatado, dataFormatada);
+    }
+
+    public ReceitaDto converterParaDto(){
+        BigDecimal valorFormatado = new BigDecimal(this.valor);
+        LocalDate dataFormatada = LocalDate.parse(this.data, formatter);
+
+        return new ReceitaDto(this.descricao, valorFormatado, dataFormatada);
     }
 }

@@ -23,6 +23,12 @@ public class ReceitaDto {
         this.data = receita.getData();
     }
 
+    public ReceitaDto(String descricao, BigDecimal valor, LocalDate data) {
+        this.descricao = descricao;
+        this.valor = valor;
+        this.data = data;
+    }
+
     public Long getId() {
         return id;
     }
@@ -59,6 +65,10 @@ public class ReceitaDto {
         return receitas.stream().map(ReceitaDto::new).collect(Collectors.toList());
     }
 
+    public Receita converterParaModel(){
+        return new Receita(this.id, this.descricao, this.valor, this.data);
+    }
+
     @Override
     public String toString() {
         return "ReceitasDto{" +
@@ -68,5 +78,4 @@ public class ReceitaDto {
                 ", data=" + data +
                 '}';
     }
-
 }

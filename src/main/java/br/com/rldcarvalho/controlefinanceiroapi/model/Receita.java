@@ -1,5 +1,7 @@
 package br.com.rldcarvalho.controlefinanceiroapi.model;
 
+import br.com.rldcarvalho.controlefinanceiroapi.repository.ReceitaRepository;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,6 +17,13 @@ public class Receita {
     private LocalDate data;
 
     public Receita(String descricao, BigDecimal valor, LocalDate data) {
+        this.descricao = descricao;
+        this.valor = valor;
+        this.data = data;
+    }
+
+    public Receita(Long id, String descricao, BigDecimal valor, LocalDate data) {
+        this.id = id;
         this.descricao = descricao;
         this.valor = valor;
         this.data = data;
@@ -38,4 +47,5 @@ public class Receita {
     public LocalDate getData() {
         return data;
     }
+
 }
