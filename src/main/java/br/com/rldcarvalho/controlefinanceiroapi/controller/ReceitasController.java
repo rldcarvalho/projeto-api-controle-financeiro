@@ -75,6 +75,19 @@ public class ReceitasController {
 
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity deletaReceita(@PathVariable Long id){
+        Optional<Receita> receita = receitaRepository.findById(id);
+
+        if (receita.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        receitaRepository.delete(receita.get());
+
+        return ResponseEntity.ok("Receita deletada com sucesso");
+    }
+
     public boolean verificaSeReceitaDuplicada(Receita receitaNova){
 
         LocalDate dataInicial = receitaNova.getData().with(TemporalAdjusters.firstDayOfMonth());
