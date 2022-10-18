@@ -1,7 +1,7 @@
 package br.com.rldcarvalho.controlefinanceiroapi.controller.form;
 
-import br.com.rldcarvalho.controlefinanceiroapi.controller.dto.ReceitaDto;
-import br.com.rldcarvalho.controlefinanceiroapi.model.Receita;
+import br.com.rldcarvalho.controlefinanceiroapi.controller.dto.DespesaDto;
+import br.com.rldcarvalho.controlefinanceiroapi.model.Despesa;
 import com.sun.istack.NotNull;
 
 import javax.validation.constraints.NotEmpty;
@@ -10,9 +10,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class ReceitaForm {
+public class DespesaForm {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
     @NotNull @NotEmpty
     private String descricao;
     @Pattern(regexp = "\\d+\\.\\d{2}")
@@ -22,7 +23,7 @@ public class ReceitaForm {
     @NotNull @NotEmpty
     private String data;
 
-    public ReceitaForm(String descricao, String valor, String data) {
+    public DespesaForm(String descricao, String valor, String data) {
         this.descricao = descricao;
         this.valor = valor;
         this.data = data;
@@ -52,17 +53,17 @@ public class ReceitaForm {
         this.data = data;
     }
 
-    public Receita converterParaModel(){
+    public Despesa converterParaModel(){
         BigDecimal valorFormatado = new BigDecimal(this.valor);
         LocalDate dataFormatada = LocalDate.parse(this.data, formatter);
 
-        return new Receita(this.descricao, valorFormatado, dataFormatada);
+        return new Despesa(this.descricao, valorFormatado, dataFormatada);
     }
 
-    public ReceitaDto converterParaDto(){
+    public DespesaDto converterParaDto(){
         BigDecimal valorFormatado = new BigDecimal(this.valor);
         LocalDate dataFormatada = LocalDate.parse(this.data, formatter);
 
-        return new ReceitaDto(this.descricao, valorFormatado, dataFormatada);
+        return new DespesaDto(this.descricao, valorFormatado, dataFormatada);
     }
 }

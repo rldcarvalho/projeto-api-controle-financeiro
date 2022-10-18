@@ -24,8 +24,8 @@ public class ReceitasController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity cadastrar(@RequestBody @Valid ReceitaForm receitaForm){
-        Receita receita = receitaForm.converterParaModelo();
+    public ResponseEntity cadastraReceita(@RequestBody @Valid ReceitaForm receitaForm){
+        Receita receita = receitaForm.converterParaModel();
 
         if(verificaSeReceitaDuplicada(receita)){
             return ResponseEntity.badRequest().body("Receita com descrição idêntica existente no mesmo mês");
