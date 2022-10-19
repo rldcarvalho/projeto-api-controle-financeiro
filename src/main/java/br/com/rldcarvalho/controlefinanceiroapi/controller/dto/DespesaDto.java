@@ -8,6 +8,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class DespesaDto {
 
@@ -72,4 +74,16 @@ public class DespesaDto {
 
         return despesaRepository.findByDescricaoAndDataBetween(despesa.getDescricao(), dataInicial, dataFinal).isPresent();
     }
+
+    public static List<DespesaDto> buscaTodasDespesas(DespesaRepository despesaRepository) {
+        List<Despesa> todasDespesas = despesaRepository.findAll();
+        List<DespesaDto> todasDespesasDto = converteParaDto(todasDespesas);
+        return todasDespesasDto;
+    }
+
+    private static List<DespesaDto> converteParaDto(List<Despesa> todasDespesas) {
+        return todasDespesas.stream().map(DespesaDto::new).collect(Collectors.toList());
+    }
+
+
 }
