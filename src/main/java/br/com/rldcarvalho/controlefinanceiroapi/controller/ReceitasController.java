@@ -27,7 +27,7 @@ public class ReceitasController {
     public ResponseEntity cadastraReceita(@RequestBody @Valid ReceitaForm receitaForm){
         Receita receita = receitaForm.converterParaModel();
 
-        if(verificaSeReceitaDuplicada(receita)){
+        if(ReceitaDto.verificaSeReceitaDuplicada(receita, receitaRepository)){
             return ResponseEntity.badRequest().body("Receita com descrição idêntica existente no mesmo mês");
         }
 
@@ -37,7 +37,7 @@ public class ReceitasController {
 
     @GetMapping
     public List<ReceitaDto> mostraReceita(){
-        return buscaTodasReceitas();
+        return ReceitaDto.buscaTodasReceitas(receitaRepository);
     }
 
     @GetMapping("/{id}")
@@ -63,7 +63,7 @@ public class ReceitasController {
         ReceitaDto receitaNovaDto = receitaForm.converterParaDto();
 
         boolean receitasTemNomesDiferentes = !receitaNovaDto.getDescricao().equals(receitaAtual.get().getDescricao());
-        if(receitasTemNomesDiferentes && verificaSeReceitaDuplicada(receitaNovaDto)){
+        if(receitasTemNomesDiferentes && ReceitaDto.verificaSeReceitaDuplicada(receitaNovaDto, receitaRepository)){
             return ResponseEntity.badRequest().body("Receita com descrição idêntica existente no mesmo mês");
         }
 
@@ -88,31 +88,6 @@ public class ReceitasController {
         return ResponseEntity.ok("Receita deletada com sucesso");
     }
 
-    public boolean verificaSeReceitaDuplicada(Receita receitaNova){
 
-        LocalDate dataInicial = receitaNova.getData().with(TemporalAdjusters.firstDayOfMonth());
-        LocalDate dataFinal = receitaNova.getData().with(TemporalAdjusters.lastDayOfMonth());
-
-        return receitaRepository
-                .findByDescricaoAndDataBetween(receitaNova.getDescricao(), dataInicial, dataFinal)
-                .isPresent();
-    }
-
-    public boolean verificaSeReceitaDuplicada(ReceitaDto receitaNova){
-
-        LocalDate dataInicial = receitaNova.getData().with(TemporalAdjusters.firstDayOfMonth());
-        LocalDate dataFinal = receitaNova.getData().with(TemporalAdjusters.lastDayOfMonth());
-
-        return receitaRepository
-                .findByDescricaoAndDataBetween(receitaNova.getDescricao(), dataInicial, dataFinal)
-                .isPresent();
-    }
-
-    public List<ReceitaDto> buscaTodasReceitas(){
-
-        List<Receita> receitas = receitaRepository.findAll();
-
-        return ReceitaDto.converter(receitas);
-    }
 
 }

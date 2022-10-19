@@ -1,10 +1,12 @@
 package br.com.rldcarvalho.controlefinanceiroapi.controller.dto;
 
 import br.com.rldcarvalho.controlefinanceiroapi.model.Receita;
+import br.com.rldcarvalho.controlefinanceiroapi.repository.ReceitaRepository;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,6 +69,33 @@ public class ReceitaDto {
 
     public Receita converterParaModel(){
         return new Receita(this.id, this.descricao, this.valor, this.data);
+    }
+
+    public static List<ReceitaDto> buscaTodasReceitas(ReceitaRepository receitaRepository){
+
+        List<Receita> receitas = receitaRepository.findAll();
+
+        return ReceitaDto.converter(receitas);
+    }
+
+    public static boolean verificaSeReceitaDuplicada(ReceitaDto receitaNova, ReceitaRepository receitaRepository){
+
+        LocalDate dataInicial = receitaNova.getData().with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate dataFinal = receitaNova.getData().with(TemporalAdjusters.lastDayOfMonth());
+
+        return receitaRepository
+                .findByDescricaoAndDataBetween(receitaNova.getDescricao(), dataInicial, dataFinal)
+                .isPresent();
+    }
+
+    public static boolean verificaSeReceitaDuplicada(Receita receitaNova, ReceitaRepository receitaRepository){
+
+        LocalDate dataInicial = receitaNova.getData().with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate dataFinal = receitaNova.getData().with(TemporalAdjusters.lastDayOfMonth());
+
+        return receitaRepository
+                .findByDescricaoAndDataBetween(receitaNova.getDescricao(), dataInicial, dataFinal)
+                .isPresent();
     }
 
     @Override
