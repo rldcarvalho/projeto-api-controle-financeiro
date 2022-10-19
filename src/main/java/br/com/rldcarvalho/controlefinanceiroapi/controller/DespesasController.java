@@ -71,7 +71,20 @@ public class DespesasController {
         despesaRepository.save(despesaNova);
 
         return ResponseEntity.ok("Despesa atualizada com sucesso.");
+    }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity deletaDespesa(@PathVariable Long id){
+        Optional<Despesa> despesa = despesaRepository.findById(id);
+
+        if(despesa.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        despesaRepository.delete(despesa.get());
+
+        return ResponseEntity.ok("Despesa deletada com sucesso.");
 
     }
+
 }
