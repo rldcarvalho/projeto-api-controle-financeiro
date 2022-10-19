@@ -13,13 +13,13 @@ import java.time.format.DateTimeFormatter;
 public class ReceitaForm {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    @NotNull @NotEmpty
+    @NotEmpty(message = "Uma descrição da receita deve ser informada")
     private String descricao;
     @Pattern(regexp = "\\d+\\.\\d{2}")
-    @NotNull @NotEmpty
+    @NotEmpty(message = "Um valor para receita deve ser informado no formato 0.00")
     private String valor;
     @Pattern(regexp = "^([0-2][0-9]||3[0-1])/(0[0-9]||1[0-2])/([0-9][0-9])?[0-9][0-9]$")
-    @NotNull @NotEmpty
+    @NotEmpty(message = "Uma data da receita deve ser informada no formato dd/mm/yyyy")
     private String data;
 
     public ReceitaForm(String descricao, String valor, String data) {
