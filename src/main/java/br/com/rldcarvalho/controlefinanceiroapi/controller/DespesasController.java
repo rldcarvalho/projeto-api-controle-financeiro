@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/despesas")
@@ -36,5 +37,17 @@ public class DespesasController {
     @GetMapping
     public List<DespesaDto> mostraDespesa(){
         return DespesaDto.buscaTodasDespesas(despesaRepository);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DespesaDto> buscaDespesaPorId(@PathVariable Long id){
+        Optional<Despesa> despesa = despesaRepository.findById(id);
+
+        if(despesa.isEmpty()){
+            return ResponseEntity.badRequest().build();
+        }
+
+        DespesaDto despesaDto = DespesaDto.converteParaDto(despesa.get());
+        return ResponseEntity.ok(despesaDto);
     }
 }

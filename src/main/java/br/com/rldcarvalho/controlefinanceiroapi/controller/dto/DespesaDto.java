@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class DespesaDto {
@@ -83,6 +84,10 @@ public class DespesaDto {
 
     private static List<DespesaDto> converteParaDto(List<Despesa> todasDespesas) {
         return todasDespesas.stream().map(DespesaDto::new).collect(Collectors.toList());
+    }
+
+    public static DespesaDto converteParaDto(Despesa despesa) {
+        return new DespesaDto(despesa);
     }
 
 
