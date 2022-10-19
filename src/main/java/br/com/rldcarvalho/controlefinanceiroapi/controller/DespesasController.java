@@ -50,4 +50,28 @@ public class DespesasController {
         DespesaDto despesaDto = DespesaDto.converteParaDto(despesa.get());
         return ResponseEntity.ok(despesaDto);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity atualizaReceita(@PathVariable Long id, @RequestBody DespesaForm despesaForm){
+        Optional<Despesa> despesaAntiga = despesaRepository.findById(id);
+
+        if(despesaAntiga.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        Despesa despesaNova = despesaForm.converterParaModel();
+
+        boolean despesasTemNomesDiferentes = !despesaNova.getDescricao().equals(despesaAntiga.get().getDescricao());
+        if(despesasTemNomesDiferentes && DespesaDto.verificaSeDespesaDuplicada(despesaNova, despesaRepository)){
+            return ResponseEntity.badRequest().body("Receita com descrição idêntica existente no mesmo mês.");
+        }
+
+        despesaNova.setId(id);
+
+        despesaRepository.save(despesaNova);
+
+        return ResponseEntity.ok("Despesa atualizada com sucesso.");
+
+
+    }
 }
