@@ -9,4 +9,3 @@ INSERT INTO DESPESAS(descricao, valor, data) VALUES('Luz', '140.00', '2022-08-10
 INSERT INTO DESPESAS(descricao, valor, data) VALUES('Internet', '99.00', '2022-08-15');
 INSERT INTO DESPESAS(descricao, valor, data) VALUES('Celular', '49.00', '2022-08-15');
 INSERT INTO DESPESAS(descricao, valor, data) VALUES('Academia', '80.00', '2022-08-20');
-
