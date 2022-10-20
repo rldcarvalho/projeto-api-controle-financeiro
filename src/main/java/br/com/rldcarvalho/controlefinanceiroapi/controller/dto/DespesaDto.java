@@ -1,9 +1,12 @@
 package br.com.rldcarvalho.controlefinanceiroapi.controller.dto;
 
+import br.com.rldcarvalho.controlefinanceiroapi.model.Categoria;
 import br.com.rldcarvalho.controlefinanceiroapi.model.Despesa;
 import br.com.rldcarvalho.controlefinanceiroapi.repository.DespesaRepository;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -20,6 +23,9 @@ public class DespesaDto {
     private BigDecimal valor;
     private LocalDate data;
 
+    @Enumerated(EnumType.STRING)
+    private Categoria categoria;
+
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public DespesaDto() {}
@@ -31,10 +37,11 @@ public class DespesaDto {
         this.data = despesa.getData();
     }
 
-    public DespesaDto(String descricao, BigDecimal valor, LocalDate data) {
+    public DespesaDto(String descricao, BigDecimal valor, LocalDate data, Categoria categoria) {
         this.descricao = descricao;
         this.valor = valor;
         this.data = data;
+        this.categoria = categoria;
     }
 
     public Long getId() {
@@ -69,6 +76,14 @@ public class DespesaDto {
         this.data = data;
     }
 
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
+
     public static boolean verificaSeDespesaDuplicada(Despesa despesa, DespesaRepository despesaRepository){
         LocalDate dataInicial = despesa.getData().with(TemporalAdjusters.firstDayOfMonth());
         LocalDate dataFinal = despesa.getData().with(TemporalAdjusters.lastDayOfMonth());
@@ -78,8 +93,7 @@ public class DespesaDto {
 
     public static List<DespesaDto> buscaTodasDespesas(DespesaRepository despesaRepository) {
         List<Despesa> todasDespesas = despesaRepository.findAll();
-        List<DespesaDto> todasDespesasDto = converteParaDto(todasDespesas);
-        return todasDespesasDto;
+        return converteParaDto(todasDespesas);
     }
 
     private static List<DespesaDto> converteParaDto(List<Despesa> todasDespesas) {

@@ -14,20 +14,25 @@ public class Despesa {
     private BigDecimal valor;
     private LocalDate data;
 
+    @Enumerated(EnumType.STRING)
+    private Categoria categoria;
+
     public Despesa() {
     }
 
-    public Despesa(Long id, String descricao, BigDecimal valor, LocalDate data) {
+    public Despesa(Long id, String descricao, BigDecimal valor, LocalDate data, Categoria categoria) {
         this.id = id;
         this.descricao = descricao;
         this.valor = valor;
         this.data = data;
+        this.categoria = categoria;
     }
 
-    public Despesa(String descricao, BigDecimal valor, LocalDate data) {
+    public Despesa(String descricao, BigDecimal valor, LocalDate data, Categoria categoria) {
         this.descricao = descricao;
         this.valor = valor;
         this.data = data;
+        this.categoria = categoria;
     }
 
     public Long getId() {
@@ -60,5 +65,13 @@ public class Despesa {
 
     public void setData(LocalDate data) {
         this.data = data;
+    }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 }

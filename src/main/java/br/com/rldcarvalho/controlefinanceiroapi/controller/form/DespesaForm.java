@@ -1,9 +1,11 @@
 package br.com.rldcarvalho.controlefinanceiroapi.controller.form;
 
 import br.com.rldcarvalho.controlefinanceiroapi.controller.dto.DespesaDto;
+import br.com.rldcarvalho.controlefinanceiroapi.model.Categoria;
 import br.com.rldcarvalho.controlefinanceiroapi.model.Despesa;
-import com.sun.istack.NotNull;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
@@ -23,11 +25,15 @@ public class DespesaForm {
     @NotEmpty(message = "Uma data da despesa deve ser informada no formato dd/mm/yyyy")
     private String data;
 
-    public DespesaForm(String descricao, String valor, String data) {
-        this.descricao = descricao;
-        this.valor = valor;
-        this.data = data;
-    }
+    @Enumerated(EnumType.STRING)
+    private Categoria categoria = Categoria.OUTRAS;
+
+//    public DespesaForm(String descricao, String valor, String data, Categoria categoria) {
+//        this.descricao = descricao;
+//        this.valor = valor;
+//        this.data = data;
+//        this.categoria = categoria;
+//    }
 
     public String getDescricao() {
         return descricao;
@@ -53,17 +59,25 @@ public class DespesaForm {
         this.data = data;
     }
 
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
+
     public Despesa converterParaModel(){
         BigDecimal valorFormatado = new BigDecimal(this.valor);
         LocalDate dataFormatada = LocalDate.parse(this.data, formatter);
 
-        return new Despesa(this.descricao, valorFormatado, dataFormatada);
+        return new Despesa(this.descricao, valorFormatado, dataFormatada, this.categoria);
     }
 
     public DespesaDto converterParaDto(){
         BigDecimal valorFormatado = new BigDecimal(this.valor);
         LocalDate dataFormatada = LocalDate.parse(this.data, formatter);
 
-        return new DespesaDto(this.descricao, valorFormatado, dataFormatada);
+        return new DespesaDto(this.descricao, valorFormatado, dataFormatada, this.categoria);
     }
 }
