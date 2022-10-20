@@ -71,6 +71,10 @@ public class ReceitaDto {
         return new Receita(this.id, this.descricao, this.valor, this.data);
     }
 
+    public static ReceitaDto converterParaDto(Receita receita){
+        return new ReceitaDto(receita);
+    }
+
     public static List<ReceitaDto> buscaTodasReceitas(ReceitaRepository receitaRepository){
 
         List<Receita> receitas = receitaRepository.findAll();

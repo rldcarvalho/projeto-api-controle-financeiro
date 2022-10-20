@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,8 +34,13 @@ public class ReceitasController {
     }
 
     @GetMapping
-    public List<ReceitaDto> mostraReceita(){
-        return ReceitaDto.buscaTodasReceitas(receitaRepository);
+    public List<ReceitaDto> mostraReceita(@RequestParam Optional<String> descricao){
+        if (descricao.isEmpty()){
+            return ReceitaDto.buscaTodasReceitas(receitaRepository);
+        }
+        List<Receita> receita = receitaRepository.findByDescricaoContaining(descricao.get());
+
+        return ReceitaDto.converter(receita);
     }
 
     @GetMapping("/{id}")
