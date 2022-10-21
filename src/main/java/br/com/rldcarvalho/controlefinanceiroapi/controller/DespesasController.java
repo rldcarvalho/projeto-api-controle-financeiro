@@ -35,8 +35,13 @@ public class DespesasController {
     }
 
     @GetMapping
-    public List<DespesaDto> mostraDespesa(){
-        return DespesaDto.buscaTodasDespesas(despesaRepository);
+    public List<DespesaDto> mostraDespesa(@RequestParam Optional<String> descricao){
+        if(descricao.isEmpty()){
+            return DespesaDto.buscaTodasDespesas(despesaRepository);
+        }
+        List<Despesa> despesa = despesaRepository.findByDescricaoContaining(descricao.get());
+
+        return DespesaDto.converteParaDto(despesa);
     }
 
     @GetMapping("/{id}")

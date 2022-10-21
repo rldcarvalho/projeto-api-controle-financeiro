@@ -12,7 +12,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class DespesaDto {
@@ -35,6 +34,7 @@ public class DespesaDto {
         this.descricao = despesa.getDescricao();
         this.valor = despesa.getValor();
         this.data = despesa.getData();
+        this.categoria = despesa.getCategoria();
     }
 
     public DespesaDto(String descricao, BigDecimal valor, LocalDate data, Categoria categoria) {
@@ -96,7 +96,7 @@ public class DespesaDto {
         return converteParaDto(todasDespesas);
     }
 
-    private static List<DespesaDto> converteParaDto(List<Despesa> todasDespesas) {
+    public static List<DespesaDto> converteParaDto(List<Despesa> todasDespesas) {
         return todasDespesas.stream().map(DespesaDto::new).collect(Collectors.toList());
     }
 
