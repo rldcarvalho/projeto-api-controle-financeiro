@@ -54,6 +54,13 @@ public class ReceitasController {
         return ResponseEntity.ok(new ReceitaDto(receita.get()));
     }
 
+    @GetMapping("/{ano}/{mes}")
+    public List<ReceitaDto> buscaReceitaPorMes(@PathVariable Integer ano, @PathVariable Integer mes){
+        List<Receita> receitasPorMes = receitaRepository.findAllByMonth(ano, mes);
+
+        return ReceitaDto.converter(receitasPorMes);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity atualizaReceita(@RequestBody @Valid ReceitaForm receitaForm, @PathVariable Long id){
 
