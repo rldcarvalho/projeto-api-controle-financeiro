@@ -56,6 +56,13 @@ public class DespesasController {
         return ResponseEntity.ok(despesaDto);
     }
 
+    @GetMapping("/{ano}/{mes}")
+    public List<DespesaDto> buscaDespesaPorMes(@PathVariable Integer ano,@PathVariable Integer mes){
+        List<Despesa> despesaPorMes = despesaRepository.findAllByMonth(ano, mes);
+
+        return DespesaDto.converteParaDto(despesaPorMes);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity atualizaReceita(@PathVariable Long id, @RequestBody DespesaForm despesaForm){
         Optional<Despesa> despesaAntiga = despesaRepository.findById(id);
