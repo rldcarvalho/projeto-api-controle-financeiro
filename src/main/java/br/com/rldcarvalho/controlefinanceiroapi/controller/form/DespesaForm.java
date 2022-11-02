@@ -28,13 +28,6 @@ public class DespesaForm {
     @Enumerated(EnumType.STRING)
     private Categoria categoria = Categoria.OUTRAS;
 
-//    public DespesaForm(String descricao, String valor, String data, Categoria categoria) {
-//        this.descricao = descricao;
-//        this.valor = valor;
-//        this.data = data;
-//        this.categoria = categoria;
-//    }
-
     public String getDescricao() {
         return descricao;
     }
