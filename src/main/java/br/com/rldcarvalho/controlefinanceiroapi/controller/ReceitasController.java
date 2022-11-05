@@ -55,10 +55,14 @@ public class ReceitasController {
     }
 
     @GetMapping("/{ano}/{mes}")
-    public List<ReceitaDto> buscaReceitaPorMes(@PathVariable Integer ano, @PathVariable Integer mes){
+    public ResponseEntity<List<ReceitaDto>> buscaReceitaPorMes(@PathVariable Integer ano, @PathVariable Integer mes){
         List<Receita> receitasPorMes = receitaRepository.findAllByMonth(ano, mes);
 
-        return ReceitaDto.converter(receitasPorMes);
+        if (receitasPorMes.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(ReceitaDto.converter(receitasPorMes));
     }
 
     @PutMapping("/{id}")
