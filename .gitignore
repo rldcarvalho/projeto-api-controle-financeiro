@@ -56,4 +56,3 @@ build/
 
 ### VS Code ###
 .vscode/
-src/test/java/br/com/rldcarvalho/controlefinanceiroapi/controller/ReceitasControllerTest.java
