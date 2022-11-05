@@ -2,6 +2,7 @@ package br.com.rldcarvalho.controlefinanceiroapi.controller.dto;
 
 import br.com.rldcarvalho.controlefinanceiroapi.model.Receita;
 import br.com.rldcarvalho.controlefinanceiroapi.repository.ReceitaRepository;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.math.BigDecimal;
@@ -12,10 +13,10 @@ import java.util.stream.Collectors;
 
 public class ReceitaDto {
 
-    @JsonIgnore
     private Long id;
     private String descricao;
     private BigDecimal valor;
+    @JsonFormat(pattern="dd/MM/yyyy")
     private LocalDate data;
 
     public ReceitaDto(Receita receita) {
