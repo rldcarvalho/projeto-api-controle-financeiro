@@ -35,13 +35,13 @@ public class DespesasController {
     }
 
     @GetMapping
-    public List<DespesaDto> mostraDespesa(@RequestParam Optional<String> descricao){
+    public ResponseEntity<List<DespesaDto>> mostraDespesa(@RequestParam Optional<String> descricao){
         if(descricao.isEmpty()){
-            return DespesaDto.buscaTodasDespesas(despesaRepository);
+            return ResponseEntity.ok(DespesaDto.buscaTodasDespesas(despesaRepository));
         }
         List<Despesa> despesa = despesaRepository.findByDescricaoContaining(descricao.get());
 
-        return DespesaDto.converteParaDto(despesa);
+        return ResponseEntity.ok(DespesaDto.converteParaDto(despesa));
     }
 
     @GetMapping("/{id}")
