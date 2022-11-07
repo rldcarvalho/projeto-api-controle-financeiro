@@ -3,6 +3,7 @@ package br.com.rldcarvalho.controlefinanceiroapi.controller.dto;
 import br.com.rldcarvalho.controlefinanceiroapi.model.Categoria;
 import br.com.rldcarvalho.controlefinanceiroapi.model.Despesa;
 import br.com.rldcarvalho.controlefinanceiroapi.repository.DespesaRepository;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.EnumType;
@@ -16,10 +17,10 @@ import java.util.stream.Collectors;
 
 public class DespesaDto {
 
-    @JsonIgnore
     private Long id;
     private String descricao;
     private BigDecimal valor;
+    @JsonFormat(pattern="dd/MM/yyyy")
     private LocalDate data;
 
     @Enumerated(EnumType.STRING)
