@@ -4,7 +4,6 @@ import br.com.rldcarvalho.controlefinanceiroapi.model.Categoria;
 import br.com.rldcarvalho.controlefinanceiroapi.model.Despesa;
 import br.com.rldcarvalho.controlefinanceiroapi.repository.DespesaRepository;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
