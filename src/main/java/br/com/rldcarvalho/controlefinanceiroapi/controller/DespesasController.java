@@ -57,10 +57,14 @@ public class DespesasController {
     }
 
     @GetMapping("/{ano}/{mes}")
-    public List<DespesaDto> buscaDespesaPorMes(@PathVariable Integer ano,@PathVariable Integer mes){
+    public ResponseEntity<List<DespesaDto>> buscaDespesaPorMes(@PathVariable Integer ano,@PathVariable Integer mes){
         List<Despesa> despesaPorMes = despesaRepository.findAllByMonth(ano, mes);
 
-        return DespesaDto.converteParaDto(despesaPorMes);
+        if (despesaPorMes.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(DespesaDto.converteParaDto(despesaPorMes));
     }
 
     @PutMapping("/{id}")
