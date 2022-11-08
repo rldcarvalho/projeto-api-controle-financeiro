@@ -49,7 +49,7 @@ public class DespesasController {
         Optional<Despesa> despesa = despesaRepository.findById(id);
 
         if(despesa.isEmpty()){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
 
         DespesaDto despesaDto = DespesaDto.converteParaDto(despesa.get());
