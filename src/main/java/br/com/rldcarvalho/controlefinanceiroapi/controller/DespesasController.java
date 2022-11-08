@@ -7,9 +7,11 @@ import br.com.rldcarvalho.controlefinanceiroapi.repository.DespesaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.NestedServletException;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.time.DateTimeException;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,7 +77,13 @@ public class DespesasController {
             return ResponseEntity.notFound().build();
         }
 
-        Despesa despesaNova = despesaForm.converterParaModel();
+        Despesa despesaNova;
+
+        try {
+            despesaNova = despesaForm.converterParaModel();
+        }catch (DateTimeException e){
+            return ResponseEntity.badRequest().build();
+        }
 
         boolean despesasTemNomesDiferentes = !despesaNova.getDescricao().equals(despesaAntiga.get().getDescricao());
         if(despesasTemNomesDiferentes && DespesaDto.verificaSeDespesaDuplicada(despesaNova, despesaRepository)){
@@ -85,6 +93,7 @@ public class DespesasController {
         despesaNova.setId(id);
 
         despesaRepository.save(despesaNova);
+
 
         return ResponseEntity.ok("Despesa atualizada com sucesso.");
     }
