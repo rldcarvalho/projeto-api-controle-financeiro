@@ -24,9 +24,15 @@ public class DespesaForm {
     @Pattern(regexp = "^([0-2][0-9]||3[0-1])/(0[0-9]||1[0-2])/[0-9][0-9][0-9][0-9]$")
     @NotEmpty(message = "Uma data da despesa deve ser informada no formato dd/mm/yyyy")
     private String data;
-
     @Enumerated(EnumType.STRING)
     private Categoria categoria = Categoria.OUTRAS;
+
+    public DespesaForm(String descricao, String valor, String data, Categoria categoria) {
+        this.descricao = descricao;
+        this.valor = valor;
+        this.data = data;
+        this.categoria = categoria;
+    }
 
     public String getDescricao() {
         return descricao;
