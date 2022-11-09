@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -17,5 +18,5 @@ public interface ReceitaRepository extends JpaRepository<Receita, Long> {
     @Query("SELECT r FROM Receita r WHERE year(r.data) = :year AND month(r.data) = :month")
     List<Receita> findAllByMonth(@Param("year") Integer year, @Param("month") Integer month);
     @Query("SELECT SUM(r.valor) FROM Receita r WHERE year(r.data) = :year AND month(r.data) = :month")
-    String sumByMonth(@Param("year") Integer year, @Param("month") Integer month);
+    Optional<BigDecimal> sumByMonth(@Param("year") Integer year, @Param("month") Integer month);
 }

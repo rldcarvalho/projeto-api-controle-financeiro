@@ -16,8 +16,8 @@ public class ResumoDto {
     public ResumoDto() {}
 
     public ResumoDto(Integer ano, Integer mes, ReceitaRepository receitaRepository, DespesaRepository despesaRepository) {
-        this.totalReceitas = new BigDecimal(receitaRepository.sumByMonth(ano, mes));
-        this.totalDespesas = new BigDecimal(despesaRepository.sumByMonth(ano, mes));
+        this.totalReceitas = receitaRepository.sumByMonth(ano, mes).orElse(BigDecimal.ZERO);
+        this.totalDespesas = despesaRepository.sumByMonth(ano, mes).orElse(BigDecimal.ZERO);
         this.saldoFinal = this.totalReceitas.subtract(this.totalDespesas);
         this.totalPorCategoria = despesaRepository.sumCategoriaByMonth(ano, mes);
     }
