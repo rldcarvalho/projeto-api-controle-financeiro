@@ -25,13 +25,16 @@ public class DespesaForm {
     @NotEmpty(message = "Uma data da despesa deve ser informada no formato dd/mm/yyyy")
     private String data;
     @Enumerated(EnumType.STRING)
-    private Categoria categoria = Categoria.OUTRAS;
+    private Categoria categoria;
 
     public DespesaForm(String descricao, String valor, String data, Categoria categoria) {
         this.descricao = descricao;
         this.valor = valor;
         this.data = data;
         this.categoria = categoria;
+        if (categoria == null) {
+            this.categoria = Categoria.OUTRAS;
+        }
     }
 
     public String getDescricao() {
