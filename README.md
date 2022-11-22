@@ -1,6 +1,14 @@
 # API para Controle Financeiro Familiar
 
-
+<p align="center">
+  <img src="https://img.shields.io/static/v1?label=spring&message=2.7.2&color=blue&style=for-the-badge&logo=SPRING"/>
+  <img src="http://img.shields.io/static/v1?label=Java&message=17&color=red&style=for-the-badge&logo=JAVA"/>
+  <img src="http://img.shields.io/static/v1?label=Maven&message=4.0.0&color=red&style=for-the-badge&logo=Apache%20Maven"/>
+  <img src="https://img.shields.io/static/v1?label=Heroku&message=deploy&color=blue&style=for-the-badge&logo=heroku"/>
+  <img src="http://img.shields.io/static/v1?label=TESTES&message=38%20passed&color=GREEN&style=for-the-badge"/>
+   <img src="http://img.shields.io/static/v1?label=License&message=MIT&color=green&style=for-the-badge"/>
+   <img src="http://img.shields.io/static/v1?label=STATUS&message=CONCLUIDO&color=GREEN&style=for-the-badge"/>
+</p>
 
 ### Descrição do Projeto
 
