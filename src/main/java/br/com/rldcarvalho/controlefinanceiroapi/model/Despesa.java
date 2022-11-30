@@ -74,4 +74,11 @@ public class Despesa {
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
     }
+
+    public void atualizar(Despesa despesaNova) {
+        this.descricao = despesaNova.getDescricao();
+        this.valor = despesaNova.getValor();
+        this.data = despesaNova.getData();
+        this.categoria = despesaNova.getCategoria();
+    }
 }

@@ -9,100 +9,42 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DespesaDto {
 
-    private Long id;
-    private String descricao;
-    private BigDecimal valor;
-    @JsonFormat(pattern="dd/MM/yyyy")
-    private LocalDate data;
+public record DespesaDto(
+        Long id,
+        String descricao,
+        BigDecimal valor,
+        @JsonFormat(pattern="dd/MM/yyyy")
+        LocalDate data,
+        @Enumerated(EnumType.STRING)
+        Categoria categoria) {
 
-    @Enumerated(EnumType.STRING)
-    private Categoria categoria;
+        public DespesaDto(Despesa despesa) {
+                this(despesa.getId(), despesa.getDescricao(), despesa.getValor(), despesa.getData(), despesa.getCategoria());
+        }
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        public static boolean verificaSeDespesaDuplicada(Despesa despesa, DespesaRepository despesaRepository){
+                LocalDate dataInicial = despesa.getData().with(TemporalAdjusters.firstDayOfMonth());
+                LocalDate dataFinal = despesa.getData().with(TemporalAdjusters.lastDayOfMonth());
 
-    public DespesaDto() {}
+                return despesaRepository.findByDescricaoAndDataBetween(despesa.getDescricao(), dataInicial, dataFinal).isPresent();
+        }
 
-    public DespesaDto(Despesa despesa) {
-        this.id = despesa.getId();
-        this.descricao = despesa.getDescricao();
-        this.valor = despesa.getValor();
-        this.data = despesa.getData();
-        this.categoria = despesa.getCategoria();
-    }
+        public static List<DespesaDto> buscaTodasDespesas(DespesaRepository despesaRepository) {
+                List<Despesa> todasDespesas = despesaRepository.findAll();
+                return converteParaDto(todasDespesas);
+        }
 
-    public DespesaDto(String descricao, BigDecimal valor, LocalDate data, Categoria categoria) {
-        this.descricao = descricao;
-        this.valor = valor;
-        this.data = data;
-        this.categoria = categoria;
-    }
+        public static List<DespesaDto> converteParaDto(List<Despesa> todasDespesas) {
+                return todasDespesas.stream().map(DespesaDto::new).collect(Collectors.toList());
+        }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public BigDecimal getValor() {
-        return valor;
-    }
-
-    public void setValor(BigDecimal valor) {
-        this.valor = valor;
-    }
-
-    public LocalDate getData() {
-        return data;
-    }
-
-    public void setData(LocalDate data) {
-        this.data = data;
-    }
-
-    public Categoria getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
-    }
-
-    public static boolean verificaSeDespesaDuplicada(Despesa despesa, DespesaRepository despesaRepository){
-        LocalDate dataInicial = despesa.getData().with(TemporalAdjusters.firstDayOfMonth());
-        LocalDate dataFinal = despesa.getData().with(TemporalAdjusters.lastDayOfMonth());
-
-        return despesaRepository.findByDescricaoAndDataBetween(despesa.getDescricao(), dataInicial, dataFinal).isPresent();
-    }
-
-    public static List<DespesaDto> buscaTodasDespesas(DespesaRepository despesaRepository) {
-        List<Despesa> todasDespesas = despesaRepository.findAll();
-        return converteParaDto(todasDespesas);
-    }
-
-    public static List<DespesaDto> converteParaDto(List<Despesa> todasDespesas) {
-        return todasDespesas.stream().map(DespesaDto::new).collect(Collectors.toList());
-    }
-
-    public static DespesaDto converteParaDto(Despesa despesa) {
-        return new DespesaDto(despesa);
-    }
-
+        public static DespesaDto converteParaDto(Despesa despesa) {
+                return new DespesaDto(despesa);
+        }
 
 }

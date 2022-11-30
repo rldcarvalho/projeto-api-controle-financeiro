@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.time.DateTimeException;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,16 +75,20 @@ public class ReceitasController {
             return ResponseEntity.notFound().build();
         }
 
-        ReceitaDto receitaNovaDto = receitaForm.converterParaDto();
+        Receita receitaNova;
 
-        boolean receitasTemNomesDiferentes = !receitaNovaDto.getDescricao().equals(receitaAtual.get().getDescricao());
-        if(receitasTemNomesDiferentes && ReceitaDto.verificaSeReceitaDuplicada(receitaNovaDto, receitaRepository)){
+        try {
+            receitaNova = receitaForm.converterParaModel();
+        }catch (DateTimeException e){
+            return ResponseEntity.badRequest().build();
+        }
+
+        boolean receitasTemNomesDiferentes = !receitaNova.getDescricao().equals(receitaAtual.get().getDescricao());
+        if(receitasTemNomesDiferentes && ReceitaDto.verificaSeReceitaDuplicada(receitaNova, receitaRepository)){
             return ResponseEntity.badRequest().body("Receita com descrição idêntica existente no mesmo mês");
         }
 
-        receitaNovaDto.setId(id);
-
-        receitaRepository.save(receitaNovaDto.converterParaModel());
+        receitaAtual.get().atualizar(receitaNova);
 
         return ResponseEntity.ok("Receita atualizada com sucesso.");
 
@@ -101,7 +106,5 @@ public class ReceitasController {
 
         return ResponseEntity.ok("Receita deletada com sucesso");
     }
-
-
 
 }

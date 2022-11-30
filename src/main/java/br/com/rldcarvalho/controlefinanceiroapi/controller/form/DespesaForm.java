@@ -75,11 +75,4 @@ public class DespesaForm {
 
         return new Despesa(this.descricao, valorFormatado, dataFormatada, this.categoria);
     }
-
-    public DespesaDto converterParaDto(){
-        BigDecimal valorFormatado = new BigDecimal(this.valor);
-        LocalDate dataFormatada = LocalDate.parse(this.data, formatter);
-
-        return new DespesaDto(this.descricao, valorFormatado, dataFormatada, this.categoria);
-    }
 }

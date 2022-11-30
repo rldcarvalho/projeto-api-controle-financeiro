@@ -7,7 +7,6 @@ import br.com.rldcarvalho.controlefinanceiroapi.repository.DespesaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.NestedServletException;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -71,9 +70,9 @@ public class DespesasController {
 
     @PutMapping("/{id}")
     public ResponseEntity atualizaReceita(@PathVariable Long id, @RequestBody DespesaForm despesaForm){
-        Optional<Despesa> despesaAntiga = despesaRepository.findById(id);
+        Optional<Despesa> despesaAtual = despesaRepository.findById(id);
 
-        if(despesaAntiga.isEmpty()){
+        if(despesaAtual.isEmpty()){
             return ResponseEntity.notFound().build();
         }
 
@@ -85,15 +84,12 @@ public class DespesasController {
             return ResponseEntity.badRequest().build();
         }
 
-        boolean despesasTemNomesDiferentes = !despesaNova.getDescricao().equals(despesaAntiga.get().getDescricao());
+        boolean despesasTemNomesDiferentes = !despesaNova.getDescricao().equals(despesaAtual.get().getDescricao());
         if(despesasTemNomesDiferentes && DespesaDto.verificaSeDespesaDuplicada(despesaNova, despesaRepository)){
             return ResponseEntity.badRequest().body("Receita com descrição idêntica existente no mesmo mês.");
         }
 
-        despesaNova.setId(id);
-
-        despesaRepository.save(despesaNova);
-
+        despesaAtual.get().atualizar(despesaNova);
 
         return ResponseEntity.ok("Despesa atualizada com sucesso.");
     }

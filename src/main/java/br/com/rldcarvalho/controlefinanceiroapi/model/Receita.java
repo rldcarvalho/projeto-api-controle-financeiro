@@ -1,5 +1,6 @@
 package br.com.rldcarvalho.controlefinanceiroapi.model;
 
+import br.com.rldcarvalho.controlefinanceiroapi.controller.dto.ReceitaDto;
 import br.com.rldcarvalho.controlefinanceiroapi.repository.ReceitaRepository;
 
 import javax.persistence.*;
@@ -48,4 +49,9 @@ public class Receita {
         return data;
     }
 
+    public void atualizar(Receita receitaNova) {
+        this.descricao = receitaNova.getDescricao();
+        this.valor = receitaNova.getValor();
+        this.data = receitaNova.getData();
+    }
 }

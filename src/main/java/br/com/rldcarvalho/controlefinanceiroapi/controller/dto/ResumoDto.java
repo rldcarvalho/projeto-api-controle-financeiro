@@ -6,51 +6,18 @@ import br.com.rldcarvalho.controlefinanceiroapi.repository.ReceitaRepository;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class ResumoDto {
-
-    private BigDecimal totalReceitas;
-    private BigDecimal totalDespesas;
-    private BigDecimal saldoFinal;
-    private List<CategoriaDto> totalPorCategoria;
-
-    public ResumoDto() {}
+public record ResumoDto(BigDecimal totalReceitas, BigDecimal totalDespesas, BigDecimal saldoFinal, List<CategoriaDto> totalPorCategoria) {
 
     public ResumoDto(Integer ano, Integer mes, ReceitaRepository receitaRepository, DespesaRepository despesaRepository) {
-        this.totalReceitas = receitaRepository.sumByMonth(ano, mes).orElse(BigDecimal.ZERO);
-        this.totalDespesas = despesaRepository.sumByMonth(ano, mes).orElse(BigDecimal.ZERO);
-        this.saldoFinal = this.totalReceitas.subtract(this.totalDespesas);
-        this.totalPorCategoria = despesaRepository.sumCategoriaByMonth(ano, mes);
+        this(receitaRepository.sumByMonth(ano, mes).orElse(BigDecimal.ZERO),
+                despesaRepository.sumByMonth(ano, mes).orElse(BigDecimal.ZERO),
+                subtrairReceitaDespesa(ano, mes, receitaRepository, despesaRepository),
+                despesaRepository.sumCategoriaByMonth(ano, mes)
+        );
     }
-
-    public BigDecimal getTotalReceitas() {
-        return totalReceitas;
-    }
-
-    public void setTotalReceitas(BigDecimal totalReceitas) {
-        this.totalReceitas = totalReceitas;
-    }
-
-    public BigDecimal getTotalDespesas() {
-        return totalDespesas;
-    }
-
-    public void setTotalDespesas(BigDecimal totalDespesas) {
-        this.totalDespesas = totalDespesas;
-    }
-
-    public BigDecimal getSaldoFinal() {
-        return saldoFinal;
-    }
-
-    public void setSaldoFinal(BigDecimal saldoFinal) {
-        this.saldoFinal = saldoFinal;
-    }
-
-    public List<CategoriaDto> getTotalPorCategoria() {
-        return totalPorCategoria;
-    }
-
-    public void setTotalPorCategoria(List<CategoriaDto> totalPorCategoria) {
-        this.totalPorCategoria = totalPorCategoria;
+    public static BigDecimal subtrairReceitaDespesa(Integer ano, Integer mes, ReceitaRepository receitaRepository, DespesaRepository despesaRepository){
+        BigDecimal totalReceitas = receitaRepository.sumByMonth(ano, mes).orElse(BigDecimal.ZERO);
+        BigDecimal totalDespesas = despesaRepository.sumByMonth(ano, mes).orElse(BigDecimal.ZERO);
+        return totalReceitas.subtract(totalDespesas);
     }
 }

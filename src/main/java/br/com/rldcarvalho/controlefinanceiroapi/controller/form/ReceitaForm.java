@@ -63,6 +63,6 @@ public class ReceitaForm {
         BigDecimal valorFormatado = new BigDecimal(this.valor);
         LocalDate dataFormatada = LocalDate.parse(this.data, formatter);
 
-        return new ReceitaDto(this.descricao, valorFormatado, dataFormatada);
+        return new ReceitaDto(0L, this.descricao, valorFormatado, dataFormatada);
     }
 }
