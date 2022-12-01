@@ -1,8 +1,9 @@
 package br.com.rldcarvalho.controlefinanceiroapi.controller.form;
 
-import br.com.rldcarvalho.controlefinanceiroapi.controller.dto.DespesaDto;
 import br.com.rldcarvalho.controlefinanceiroapi.model.Categoria;
 import br.com.rldcarvalho.controlefinanceiroapi.model.Despesa;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -12,6 +13,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+@Getter
+@Setter
 public class DespesaForm {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -35,38 +38,6 @@ public class DespesaForm {
         if (categoria == null) {
             this.categoria = Categoria.OUTRAS;
         }
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public String getValor() {
-        return valor;
-    }
-
-    public void setValor(String valor) {
-        this.valor = valor;
-    }
-
-    public String getData() {
-        return data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
-    }
-
-    public Categoria getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
     }
 
     public Despesa converterParaModel(){
