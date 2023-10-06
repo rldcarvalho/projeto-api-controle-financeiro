@@ -2,109 +2,394 @@
 
 <p align="center">
   <img src="https://img.shields.io/static/v1?label=spring&message=2.7.2&color=blue&style=for-the-badge&logo=SPRING"/>
-  <img src="http://img.shields.io/static/v1?label=Java&message=17&color=red&style=for-the-badge&logo=JAVA"/>
-  <img src="http://img.shields.io/static/v1?label=Maven&message=4.0.0&color=red&style=for-the-badge&logo=Apache%20Maven"/>
+  <img src="http://img.shields.io/static/v1?label=Java&message=17&color=blue&style=for-the-badge&logo=JAVA"/>
+<img src="https://img.shields.io/static/v1?label=MySQL&message=8.0.0&color=blue&style=for-the-badge&logo=mysql&logoColor=white"/>
+  <img src="http://img.shields.io/static/v1?label=Docker&message=4.24.0&color=blue&style=for-the-badge&logo=docker"/>
+  <img src="http://img.shields.io/static/v1?label=Maven&message=4.0.0&color=blue&style=for-the-badge&logo=Apache%20Maven"/>
   <img src="https://img.shields.io/static/v1?label=Heroku&message=deploy&color=blue&style=for-the-badge&logo=heroku"/>
   <img src="http://img.shields.io/static/v1?label=TESTES&message=38%20passed&color=GREEN&style=for-the-badge"/>
-   <img src="http://img.shields.io/static/v1?label=License&message=MIT&color=green&style=for-the-badge"/>
-   <img src="http://img.shields.io/static/v1?label=STATUS&message=CONCLUIDO&color=GREEN&style=for-the-badge"/>
+   
+   <img src="http://img.shields.io/static/v1?label=STATUS&message=REFATORANDO&color=GREEN&style=for-the-badge"/>
 </p>
 
 ### Descrição do Projeto
 
-Esse projeto consiste em uma *API REST* para realizar o gerenciamento das finanças mensais de uma residência. A aplicação apresenta o *CRUD* de receitas, despesas e elabora um resumo com os dados mensais.
-O mesmo foi desenvolvido em *Java* com auxílio do *Spring Framework*. Como banco de dados, utilizei o *MySQL* para desenvolvimento e *H2* para testes, realizados através do *JUnit 5*. A autenticação dos usuários foi elaborada seguindo o padrão *JWT*. 
-Utilizando o *Docker*, foi realizado o deploy da aplicação no *Heroku*, entretanto a aplicação deixou de oferecer seu plano gratuito de hospedagem em novembro de 2022.
+Esta é uma API REST que permite o gerenciamento das finanças mensais de uma residência. Oferece operações CRUD para receitas e despesas, além de elaborar um resumo com os dados mensais. A aplicação foi desenvolvida em Java, utilizando o Spring Framework. O banco de dados MySQL foi utilizado para o ambiente de desenvolvimento, e o H2 foi utilizado para os testes, que foram realizados com JUnit 5 e MocMvc. A autenticação dos usuários segue o padrão JWT. A aplicação foi implantada no Heroku, porém, a partir de novembro de 2022, deixou de oferecer o plano gratuito de hospedagem.
 
-### Autenticação
+### Tecnologias Utilizadas:
 
-Os endpoints da aplicação só podem ser acessados mediante autenticação via Web Token.
+| Descrição              | Tecnologia                                                                                                                              |
+|------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| Linguagem              | [Java](https://www.java.com/)                                                                                                           |
+| Framework              | [Spring Boot](https://spring.io/)                                                                                                       |
+| Banco de Dados         | [MySQL](https://www.mysql.com/), [H2](https://www.h2database.com/html/main.html)                                                        |
+| Documentação           | [SpringDoc Swagger](https://springdoc.org/)                                                                                             |
+| Testes Unitários       | [Junit](https://junit.org/junit5/), [MockMvc](https://docs.spring.io/spring-framework/reference/testing/spring-mvc-test-framework.html) |
+| Padrão de Autenticação | [JWT (Json Web Token)](https://github.com/jwtk/jjwt)                                                                                    |
+| Conteinerização        | [Docker](https://www.docker.com/), [Lombok](https://projectlombok.org/)                                                                 |
+| Ferramenta de Build    | [Apache Maven](https://maven.apache.org/)                                                                                               |
+| Editor de Código       | [Intellij](https://www.jetbrains.com/idea/)                                                                                             |
+| Versionamento          | [Git](https://git-scm.com/)                                                                                                             |
 
-Para obter o token é necessário realizar uma requisição do tipo POST para ```/auth``` com os seguintes parâmetros:
+### Premissa do Projeto
+
+A primeira versão desta aplicação para controle de orçamento familiar foi requisitada após testes com protótipos realizados pela equipe de UX de uma empresa. A aplicação deve permitir que os usuários cadastrem suas receitas e despesas mensais, além de gerar um relatório mensal.
+
+As equipes de frontend e UI já estão trabalhando no layout e nas telas. Para o backend, as principais funcionalidades a serem implementadas incluem:
+
+1. **API com rotas implementadas seguindo as boas práticas do modelo REST**.
+2. **Validações de acordo com as regras de negócio**.
+3. **Implementação de uma base de dados para a persistência das informações**.
+4. **Serviço de autenticação/autorização para restringir o acesso às informações**.
+
+## Endpoints da API
+
+### Cadastro de Receita
+
+`POST /receitas`
+
+Permite o cadastro de uma nova receita. O corpo da requisição deve conter um objeto JSON com os campos `descricao`, `valor` e `data` como obrigatórios.
+
+Formato do campo `data`: "dd/MM/yyyy"
+
+**Exemplo de Requisição:**
 
 ```json
-"username": "usuario",
-"password": "12345"
+{
+   "descricao": "Salário",
+   "valor": "2500.00",
+   "data": "15/09/2023"
+}
 ```
 
-### Receitas
-
-Contém os seguintes campos:
+**Exemplo de Resposta:**
 
 ```json
-"Id", //Id auto gerado
-"Descricao", //Descrição
-"Valor", //Valor no formato 0.00
-"Data", //Data no formato dd/MM/yyyy
+{
+   "id": 1,
+   "descricao": "Salário",
+   "valor": 2500.00,
+   "data": "2023-09-15"
+}
 ```
 
-Suporta das seguintes funcionalidades:
+### Listagem de Receitas
 
-POST ```/receitas```
-Realiza o cadastro de uma receita.
+`GET /receitas`
 
-GET ```/receitas```
 Retorna todas as receitas cadastradas.
 
-GET ```/receitas/{id}```
-Busca receita com o id informada no endereço.
+**Exemplo de Resposta:**
+```json
+[
+  {
+    "id": 1,
+    "descricao": "Salário",
+    "valor": 2500.00,
+    "data": "2023-09-15"
+  },
+  {
+    "id": 2,
+    "descricao": "Freelance",
+    "valor": 800.00,
+    "data": "2023-09-10"
+  }
+  // Outras receitas...
+]
+```
+### Consulta Detalhada de Receita por ID
 
-GET ```/receitas/{ano}/{mes}```
-Busca receitas no mês informado no endereço.
+`GET /receitas/{id}`
 
-PUT ```/receitas/{id}```
-Atualiza receita cujo id for informado no endereço.
+Retorna a receita correspondente ao ID fornecido.
 
-DELETE ```/receitas/{id}```
-Exclui a receita com id informado no endereço.
-
-### Despesas
-
-Contém os seguintes campos:
+**Exemplo de Resposta:**
 
 ```json
-"Id", //Id auto gerado
-"Descricao", //Descrição
-"Valor", //Valor no formato 0.00
-"Data", //Data no formato dd/MM/yyyy
-"Categoria" // Enum(Alimentação, Saúde, Moradia, Transporte, Educação, Lazer, Imprevistos, Outras) Assume o valor padrão "Outras" caso não seja informado no cadastro
+{
+   "id": 1,
+   "descricao": "Salário",
+   "valor": 2500.00,
+   "data": "2023-09-15"
+}
 ```
 
-Suporta das seguintes funcionalidades:
+### Consulta de Receitas por Mês e Ano
 
-POST ```/despesas```
-Realiza o cadastro de uma despesa.
+`GET /receitas/{ano}/{mes}`
 
-GET ```/despesas```
+Retorna as receitas do mês e ano fornecidos.
+
+**Exemplo de Resposta:**
+
+```json
+[
+   {
+      "id": 1, 
+      "descricao": "Salário", 
+      "valor": 2500.00, 
+      "data": "2023-09-15"
+   },
+   {
+      "id": 2, 
+      "descricao": "Freelance", 
+      "valor": 800.00, 
+      "data": "2023-09-10"
+   }
+   // Outras receitas do mês e ano fornecidos...
+]
+```
+
+### Atualização de Receita
+
+`PUT /receitas/{id}`
+
+Permite a atualização dos campos descricao, valor e data da receita correspondente ao ID informado no corpo da requisição. Retorna um JSON com os dados da receita atualizada.
+
+**Exemplo de Requisição:**
+
+```json
+{
+    "descricao": "Salário",
+    "valor": "2800.00",
+    "data": "15/09/2023"
+}
+```
+**Exemplo de Resposta:**
+
+```json
+{
+   "id": 1,
+   "descricao": "Salário",
+   "valor": 2800.00,
+   "data": "2023-09-15"
+}
+```
+
+### Remoção de Receita
+
+`DELETE /receitas/{id}`
+
+Permite excluir a receita correspondente ao ID fornecido.
+
+### Cadastro de Despesa
+
+`POST /despesas`
+
+Permite o cadastro de uma nova despesa. O corpo da requisição deve conter um objeto JSON com os campos `descricao`, `valor`, `data` e `categoria` como obrigatórios.
+
+Formato do campo `data`: "dd/MM/yyyy"
+
+**Exemplo de Requisição:**
+
+```json
+{
+   "descricao": "Aluguel",
+   "valor": "1200.00",
+   "data": "15/09/2023",
+   "categoria": "Moradia"
+}
+```
+
+**Exemplo de Resposta:**
+
+```json
+{
+   "id": 1,
+   "descricao": "Aluguel",
+   "valor": 1200.00,
+   "data": "2023-09-15",
+   "categoria": "Moradia"
+}
+```
+
+### Enums de Categoria
+
+A categoria deve ser uma das seguintes opções:
+
+- "Alimentação"
+- "Saúde"
+- "Moradia"
+- "Transporte"
+- "Educação"
+- "Lazer"
+- "Imprevistos"
+- "Outras"
+
+Isso deve ser especificado no campo "categoria" ao cadastrar ou atualizar uma despesa.
+
+### Listagem de Despesas
+
+`GET /despesas`
+
 Retorna todas as despesas cadastradas.
 
-GET ```/despesas/{id}```
-Busca despesa com o id informada no endereço.
+**Exemplo de Resposta:**
 
-GET ```/despesas/{ano}/{mes}```
+```json
+[
+   {
+      "id": 1, 
+      "descricao": "Aluguel", 
+      "valor": 1200.00, 
+      "data": "2023-09-15",
+      "categoria": "Moradia"
+   },
+   {
+      "id": 2, 
+      "descricao": "Supermercado", 
+      "valor": 300.00, 
+      "data": "2023-09-10",
+      "categoria": "Alimentação"
+   }
+]
+```
+
+### Busca de Despesa por ID
+
+`GET /despesas/{id}`
+
+Busca uma despesa com o ID informado no endereço.
+
+**Exemplo de Resposta:**
+
+```json
+{
+   "id": 1,
+   "descricao": "Aluguel",
+   "valor": 1200.00,
+   "data": "2023-09-15",
+   "categoria": "Moradia"
+}
+```
+
+### Busca de Despesa por Mês
+
+`GET /despesas/{ano}/{mes}`
+
 Busca despesas no mês informado no endereço.
 
-PUT ```/despesas/{id}```
-Atualiza despesa cujo id for informado no endereço.
+**Exemplo de Resposta:**
 
-DELETE ```/despesas/{id}```
-Exclui a despesa com id informado no endereço.
+```json
+[
+   {
+      "id": 1, 
+      "descricao": "Aluguel", 
+      "valor": 1200.00, 
+      "data": "2023-09-15",
+      "categoria": "Moradia"
+   },
+   {
+      "id": 2, 
+      "descricao": "Supermercado", 
+      "valor": 300.00, 
+      "data": "2023-09-10",
+      "categoria": "Alimentação"
+   }
+]
+```
 
-### Resumo Mensal
+### Atualização de Despesa
 
-GET ```/resumo/{ano}/{mes}```
+`PUT /despesas/{id}`
+
+Permite a atualização dos campos descricao, valor, data e categoria da despesa correspondente ao ID informado no corpo da requisição.
+
+**Exemplo de Requisição:**
+
+```json
+{
+    "descricao": "Aluguel",
+    "valor": "1300.00",
+    "data": "15/09/2023",
+    "categoria": "Moradia"
+}
+```
+**Exemplo de Resposta:**
+
+```json
+{
+   "id": 1,
+   "descricao": "Aluguel",
+   "valor": 1300.00,
+   "data": "2023-09-15",
+   "categoria": "Moradia"
+}
+```
+
+### Exclusão de Despesa
+
+`DELETE /despesas/{id}`
+
+Permite excluir a despesa correspondente ao ID fornecido.
+
+### Consulta do Resumo Mensal
+
+`GET /resumo/{ano}/{mes}`
+
 Retorna um resumo contendo o valor total das receitas e despesas, o saldo final e a somatória de despesas em cada categoria no mês informado.
 
-## Premissa do Projeto
+`ano`: O ano desejado para o resumo (ex: 2023)
+`mes`: O mês desejado para o resumo (ex: 9 para setembro)
 
-Após alguns testes com protótipos feitos pelo time de UX de uma empresa, foi requisitada a primeira versão de uma aplicação para controle de orçamento familiar. A aplicação deve permitir que uma pessoa cadastre suas receitas e despesas do mês, bem como gerar um relatório mensal.
+**Exemplo de Requisição:**
 
-Os times de frontend e UI já estão trabalhando no layout e nas telas. Para o back-end, as principais funcionalidades a serem implementadas são:
+```bash
+GET /resumo/2023/9
+```
 
-1. **API com rotas implementadas seguindo as boas práticas do modelo REST**;
-2. **Validações feitas conforme as regras de negócio**;
-3. **Implementação de base de dados para persistência das informações**;
-4. **Serviço de autenticação/autorização para restringir acesso às informações**.
+**Exemplo de Resposta:**
+
+```json
+{
+   "totalReceitas": 5000.00,
+   "totalDespesas": 3000.00,
+   "saldoFinal": 2000.00,
+   "totalPorCategoria": [
+      {
+         "categoria": "Alimentação",
+         "valor": 800.00
+      },
+      {
+         "categoria": "Moradia",
+         "valor": 1200.00
+      },
+      {
+         "categoria": "Transporte",
+         "valor": 500.00
+      }
+   ]
+}
+```
+
+## Autenticação
+
+A autenticação na aplicação é feita por meio de um endpoint disponibilizado pelo `AutenticacaoController`. Este endpoint recebe as credenciais de login por meio de um objeto `LoginForm`, autentica o usuário com base nessas credenciais utilizando o `AuthenticationManager` e, se a autenticação for bem-sucedida, gera um token de acesso utilizando o `TokenService`.
+
+### Endpoint de Autenticação
+
+`POST /auth`
+
+Realiza a autenticação do usuário e gera um token de acesso.
+
+**Exemplo de Requisição:**
+
+```json
+{
+   "usuario": "exemplo_usuario",
+   "senha": "exemplo_senha"
+}
+```
+
+**Exemplo de Resposta:**
+
+```json
+{
+   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+   "tipoToken": "Bearer"
+}
+```
 
 ## Licença
 
