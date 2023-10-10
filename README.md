@@ -391,6 +391,43 @@ Realiza a autenticação do usuário e gera um token de acesso.
 }
 ```
 
+## Documentação
+
+Este projeto utiliza o [Swagger](https://springdoc.org/) para gerar a documentação, que pode ser acessada pelo link abaixo após executar a API:
+
+[localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+
+## Executando o projeto localmente
+
+Para executar a aplicação localmente deve-se fazer inicialmente o clone desse repositório:
+
+```bash
+# Clone o repositório
+git clone https://github.com/rldcarvalho/projeto-api-controle-financeiro.git
+
+# Navegue até o repositório clonado
+cd projeto-api-controle-financeiro
+```
+### Configurando o banco de dados
+
+O projeto utiliza o banco de dados MySQL. Para executá-lo, crie um banco e exporte as seguintes variáveis de ambiente para executar o perfil de produção do projeto:
+
+```properties
+${DB_URL} // Url do banco de dados
+${DB_USERNAME} // Nome de usuário do banco
+${DB_PASSWORD} // Senha do banco de dados
+```
+
+### Execução
+
+Execute o projeto como seguinte comando:
+
+```bash
+mvn spring-boot:run
+```
+
+Para fazer as requisições HTTP aos endpoints da API, utilize ferramentas como [Postman](https://www.postman.com/) ou [Insomnia](https://insomnia.rest/download).
+
 ## Licença
 
 The [MIT License](https://github.com/rldcarvalho/projeto-api-controle-financeiro/blob/main/LICENSE) (MIT)
