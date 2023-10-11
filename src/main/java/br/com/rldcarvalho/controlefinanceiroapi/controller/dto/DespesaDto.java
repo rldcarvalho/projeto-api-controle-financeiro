@@ -5,8 +5,8 @@ import br.com.rldcarvalho.controlefinanceiroapi.model.Despesa;
 import br.com.rldcarvalho.controlefinanceiroapi.repository.DespesaRepository;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;

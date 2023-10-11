@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
