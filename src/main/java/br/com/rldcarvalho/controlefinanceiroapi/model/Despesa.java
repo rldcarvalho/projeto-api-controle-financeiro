@@ -1,12 +1,14 @@
 package br.com.rldcarvalho.controlefinanceiroapi.model;
 
+import br.com.rldcarvalho.controlefinanceiroapi.controller.form.DespesaForm;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @NoArgsConstructor
@@ -31,10 +33,13 @@ public class Despesa {
         this.categoria = categoria;
     }
 
-    public void atualizar(Despesa despesaNova) {
-        this.descricao = despesaNova.getDescricao();
-        this.valor = despesaNova.getValor();
-        this.data = despesaNova.getData();
-        this.categoria = despesaNova.getCategoria();
+    public Despesa(DespesaForm despesaForm){
+        BigDecimal valorFormatado = new BigDecimal(despesaForm.getValor());
+        LocalDate dataFormatada = LocalDate.parse(despesaForm.getData(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+        this.descricao = despesaForm.getDescricao();
+        this.valor = valorFormatado;
+        this.data = dataFormatada;
+        this.categoria = despesaForm.getCategoria();
     }
 }

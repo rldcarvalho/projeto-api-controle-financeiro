@@ -26,25 +26,4 @@ public record DespesaDto(
         public DespesaDto(Despesa despesa) {
                 this(despesa.getId(), despesa.getDescricao(), despesa.getValor(), despesa.getData(), despesa.getCategoria());
         }
-
-        public static boolean verificaSeDespesaDuplicada(Despesa despesa, DespesaRepository despesaRepository){
-                LocalDate dataInicial = despesa.getData().with(TemporalAdjusters.firstDayOfMonth());
-                LocalDate dataFinal = despesa.getData().with(TemporalAdjusters.lastDayOfMonth());
-
-                return despesaRepository.findByDescricaoAndDataBetween(despesa.getDescricao(), dataInicial, dataFinal).isPresent();
-        }
-
-        public static List<DespesaDto> buscaTodasDespesas(DespesaRepository despesaRepository) {
-                List<Despesa> todasDespesas = despesaRepository.findAll();
-                return converteParaDto(todasDespesas);
-        }
-
-        public static List<DespesaDto> converteParaDto(List<Despesa> todasDespesas) {
-                return todasDespesas.stream().map(DespesaDto::new).collect(Collectors.toList());
-        }
-
-        public static DespesaDto converteParaDto(Despesa despesa) {
-                return new DespesaDto(despesa);
-        }
-
 }

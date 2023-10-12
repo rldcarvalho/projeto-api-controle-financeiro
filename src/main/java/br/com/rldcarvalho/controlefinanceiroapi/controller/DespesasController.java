@@ -4,12 +4,13 @@ import br.com.rldcarvalho.controlefinanceiroapi.controller.dto.DespesaDto;
 import br.com.rldcarvalho.controlefinanceiroapi.controller.form.DespesaForm;
 import br.com.rldcarvalho.controlefinanceiroapi.model.Despesa;
 import br.com.rldcarvalho.controlefinanceiroapi.repository.DespesaRepository;
+import br.com.rldcarvalho.controlefinanceiroapi.services.DespesaService;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import java.time.DateTimeException;
 import java.util.List;
 import java.util.Optional;
@@ -23,10 +24,10 @@ public class DespesasController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity cadastraDespesa(@RequestBody @Valid DespesaForm despesaForm){
-        Despesa despesa = despesaForm.converterParaModel();
+    public ResponseEntity<String> cadastraDespesa(@RequestBody @Valid DespesaForm despesaForm){
+        Despesa despesa = new Despesa(despesaForm);
 
-        if(DespesaDto.verificaSeDespesaDuplicada(despesa, despesaRepository)){
+        if(DespesaService.verificaSeDespesaDuplicada(despesa, despesaRepository)){
             return ResponseEntity.badRequest().body("Despesa com descrição idêntica existente no mesmo mês");
         }
 
@@ -36,24 +37,29 @@ public class DespesasController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DespesaDto>> mostraDespesa(@RequestParam Optional<String> descricao){
-        if(descricao.isEmpty()){
-            return ResponseEntity.ok(DespesaDto.buscaTodasDespesas(despesaRepository));
-        }
-        List<Despesa> despesa = despesaRepository.findByDescricaoContaining(descricao.get());
+    public ResponseEntity<List<DespesaDto>> mostraDespesa(@RequestParam(required = false) String descricao) {
+        List<Despesa> despesaList;
 
-        return ResponseEntity.ok(DespesaDto.converteParaDto(despesa));
+        if (descricao == null || descricao.isEmpty()) {
+            despesaList = despesaRepository.findAll();
+        } else {
+            despesaList = despesaRepository.findByDescricaoContaining(descricao);
+        }
+
+        List<DespesaDto> despesaDtoList = DespesaService.converteParaDto(despesaList);
+
+        return ResponseEntity.ok(despesaDtoList);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<DespesaDto> buscaDespesaPorId(@PathVariable Long id){
-        Optional<Despesa> despesa = despesaRepository.findById(id);
+        Despesa despesa = despesaRepository.findById(id).orElse(null);
 
-        if(despesa.isEmpty()){
+        if (despesa == null) {
             return ResponseEntity.notFound().build();
         }
 
-        DespesaDto despesaDto = DespesaDto.converteParaDto(despesa.get());
+        DespesaDto despesaDto = new DespesaDto(despesa);
         return ResponseEntity.ok(despesaDto);
     }
 
@@ -62,14 +68,14 @@ public class DespesasController {
         List<Despesa> despesaPorMes = despesaRepository.findAllByMonth(ano, mes);
 
         if (despesaPorMes.isEmpty()){
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok(DespesaDto.converteParaDto(despesaPorMes));
+        return ResponseEntity.ok(DespesaService.converteParaDto(despesaPorMes));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity atualizaReceita(@PathVariable Long id, @RequestBody DespesaForm despesaForm){
+    public ResponseEntity<String> atualizaReceita(@PathVariable Long id, @RequestBody @Valid DespesaForm despesaForm){
         Optional<Despesa> despesaAtual = despesaRepository.findById(id);
 
         if(despesaAtual.isEmpty()){
@@ -79,23 +85,23 @@ public class DespesasController {
         Despesa despesaNova;
 
         try {
-            despesaNova = despesaForm.converterParaModel();
+            despesaNova = new Despesa(despesaForm);
         }catch (DateTimeException e){
             return ResponseEntity.badRequest().build();
         }
 
         boolean despesasTemNomesDiferentes = !despesaNova.getDescricao().equals(despesaAtual.get().getDescricao());
-        if(despesasTemNomesDiferentes && DespesaDto.verificaSeDespesaDuplicada(despesaNova, despesaRepository)){
+        if(despesasTemNomesDiferentes && DespesaService.verificaSeDespesaDuplicada(despesaNova, despesaRepository)){
             return ResponseEntity.badRequest().body("Receita com descrição idêntica existente no mesmo mês.");
         }
 
-        despesaAtual.get().atualizar(despesaNova);
+        despesaRepository.save(despesaAtual.get());
 
         return ResponseEntity.ok("Despesa atualizada com sucesso.");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deletaDespesa(@PathVariable Long id){
+    public ResponseEntity<String> deletaDespesa(@PathVariable Long id){
         Optional<Despesa> despesa = despesaRepository.findById(id);
 
         if(despesa.isEmpty()){
@@ -105,7 +111,6 @@ public class DespesasController {
         despesaRepository.delete(despesa.get());
 
         return ResponseEntity.ok("Despesa deletada com sucesso.");
-
     }
 
 }

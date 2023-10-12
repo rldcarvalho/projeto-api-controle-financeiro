@@ -1,16 +1,13 @@
 package br.com.rldcarvalho.controlefinanceiroapi.controller.form;
 
 import br.com.rldcarvalho.controlefinanceiroapi.model.Categoria;
-import br.com.rldcarvalho.controlefinanceiroapi.model.Despesa;
-import lombok.Getter;
-import lombok.Setter;
-
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.format.DateTimeFormatter;
 
 @Getter
@@ -38,12 +35,5 @@ public class DespesaForm {
         if (categoria == null) {
             this.categoria = Categoria.OUTRAS;
         }
-    }
-
-    public Despesa converterParaModel(){
-        BigDecimal valorFormatado = new BigDecimal(this.valor);
-        LocalDate dataFormatada = LocalDate.parse(this.data, formatter);
-
-        return new Despesa(this.descricao, valorFormatado, dataFormatada, this.categoria);
     }
 }

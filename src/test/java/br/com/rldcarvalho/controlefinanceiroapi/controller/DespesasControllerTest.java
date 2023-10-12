@@ -222,14 +222,14 @@ class DespesasControllerTest {
 
     @Test
     @Order(11)
-    void deveriaRetornarNotFoundAoPesquisarPorMesInvalido() throws Exception {
+    void deveriaRetornarNoContentAoPesquisarPorMesInvalido() throws Exception {
 
         URI uri = new URI("/despesas/2022/15");
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get(uri))
                 .andExpect(MockMvcResultMatchers
-                        .status().isNotFound());
+                        .status().isNoContent());
     }
 
     @Test
