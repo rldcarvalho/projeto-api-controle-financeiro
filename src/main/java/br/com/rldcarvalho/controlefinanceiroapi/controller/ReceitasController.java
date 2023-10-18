@@ -4,12 +4,13 @@ import br.com.rldcarvalho.controlefinanceiroapi.controller.dto.ReceitaDto;
 import br.com.rldcarvalho.controlefinanceiroapi.controller.form.ReceitaForm;
 import br.com.rldcarvalho.controlefinanceiroapi.model.Receita;
 import br.com.rldcarvalho.controlefinanceiroapi.repository.ReceitaRepository;
+import br.com.rldcarvalho.controlefinanceiroapi.services.ReceitaService;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import java.time.DateTimeException;
 import java.util.List;
 import java.util.Optional;
@@ -23,29 +24,35 @@ public class ReceitasController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity cadastraReceita(@RequestBody @Valid ReceitaForm receitaForm){
-        Receita receita = receitaForm.converterParaModel();
+    public ResponseEntity<String> cadastraReceita(@RequestBody @Valid ReceitaForm receitaForm){
+        Receita receita = new Receita(receitaForm);
 
-        if(ReceitaDto.verificaSeReceitaDuplicada(receita, receitaRepository)){
+        if(ReceitaService.verificaSeReceitaDuplicada(receita, receitaRepository)){
             return ResponseEntity.badRequest().body("Receita com descrição idêntica existente no mesmo mês");
         }
 
         receitaRepository.save(receita);
+
         return ResponseEntity.ok("Receita cadastrada com sucesso");
     }
 
     @GetMapping
-    public List<ReceitaDto> mostraReceita(@RequestParam Optional<String> descricao){
-        if (descricao.isEmpty()){
-            return ReceitaDto.buscaTodasReceitas(receitaRepository);
-        }
-        List<Receita> receita = receitaRepository.findByDescricaoContaining(descricao.get());
+    public ResponseEntity<List<ReceitaDto>> buscaReceita(@RequestParam(required = false) String descricao){
+        List<Receita> receitas;
 
-        return ReceitaDto.converter(receita);
+        if (descricao == null || descricao.isEmpty()) {
+            receitas = receitaRepository.findAll();
+        } else {
+            receitas = receitaRepository.findByDescricaoContaining(descricao);
+        }
+
+        List<ReceitaDto> receitasDto = ReceitaService.converterParaDtoList(receitas);
+
+        return ResponseEntity.ok(receitasDto);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReceitaDto> mostraReceitaPorId(@PathVariable Long id){
+    public ResponseEntity<ReceitaDto> buscaReceitaPorId(@PathVariable Long id){
         Optional<Receita> receita = receitaRepository.findById(id);
 
         if (receita.isEmpty()){
@@ -63,46 +70,44 @@ public class ReceitasController {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(ReceitaDto.converter(receitasPorMes));
+        return ResponseEntity.ok(ReceitaService.converterParaDtoList(receitasPorMes));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity atualizaReceita(@RequestBody @Valid ReceitaForm receitaForm, @PathVariable Long id){
-
+    public ResponseEntity<String> atualizaReceita(@RequestBody @Valid ReceitaForm receitaForm, @PathVariable Long id){
         Optional<Receita> receitaAtual = receitaRepository.findById(id);
 
         if(receitaAtual.isEmpty()){
             return ResponseEntity.notFound().build();
         }
 
-        Receita receitaNova;
-
         try {
-            receitaNova = receitaForm.converterParaModel();
+            Receita receitaNova = new Receita(receitaForm);
+
+            boolean receitasTemNomesDiferentes = !receitaNova.getDescricao().equals(receitaAtual.get().getDescricao());
+            if(receitasTemNomesDiferentes && ReceitaService.verificaSeReceitaDuplicada(receitaNova, receitaRepository)){
+                return ResponseEntity.badRequest().body("Receita com descrição idêntica existente no mesmo mês");
+            }
+
+            receitaAtual.get().atualizar(receitaNova);
+            receitaRepository.save(receitaAtual.get());
+
+            return ResponseEntity.ok("Receita atualizada com sucesso.");
+
         }catch (DateTimeException e){
             return ResponseEntity.badRequest().build();
         }
-
-        boolean receitasTemNomesDiferentes = !receitaNova.getDescricao().equals(receitaAtual.get().getDescricao());
-        if(receitasTemNomesDiferentes && ReceitaDto.verificaSeReceitaDuplicada(receitaNova, receitaRepository)){
-            return ResponseEntity.badRequest().body("Receita com descrição idêntica existente no mesmo mês");
-        }
-
-        receitaAtual.get().atualizar(receitaNova);
-
-        return ResponseEntity.ok("Receita atualizada com sucesso.");
-
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deletaReceita(@PathVariable Long id){
+    public ResponseEntity<String> deletaReceita(@PathVariable Long id){
         Optional<Receita> receita = receitaRepository.findById(id);
 
         if (receita.isEmpty()){
             return ResponseEntity.notFound().build();
         }
 
-        receitaRepository.delete(receita.get());
+        receitaRepository.deleteById(id);
 
         return ResponseEntity.ok("Receita deletada com sucesso");
     }

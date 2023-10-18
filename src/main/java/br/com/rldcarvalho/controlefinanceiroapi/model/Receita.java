@@ -1,11 +1,13 @@
 package br.com.rldcarvalho.controlefinanceiroapi.model;
 
+import br.com.rldcarvalho.controlefinanceiroapi.controller.form.ReceitaForm;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @NoArgsConstructor
@@ -23,6 +25,15 @@ public class Receita {
         this.descricao = descricao;
         this.valor = valor;
         this.data = data;
+    }
+
+    public Receita(ReceitaForm receitaForm){
+        BigDecimal valorFormatado = new BigDecimal(receitaForm.getValor());
+        LocalDate dataFormatada = LocalDate.parse(receitaForm.getData(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+        this.descricao = receitaForm.getDescricao();
+        this.valor = valorFormatado;
+        this.data = dataFormatada;
     }
 
     public void atualizar(Receita receitaNova) {

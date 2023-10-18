@@ -4,6 +4,7 @@ import br.com.rldcarvalho.controlefinanceiroapi.controller.form.DespesaForm;
 import br.com.rldcarvalho.controlefinanceiroapi.controller.form.ReceitaForm;
 import br.com.rldcarvalho.controlefinanceiroapi.model.Categoria;
 import br.com.rldcarvalho.controlefinanceiroapi.model.Despesa;
+import br.com.rldcarvalho.controlefinanceiroapi.model.Receita;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
@@ -103,7 +104,7 @@ class ResumoControllerTest {
     void cadastraReceita(String descricao, String valor, String data){
 
         ReceitaForm receita = new ReceitaForm(descricao, valor, data);
-        em.persist(receita.converterParaModel());
+        em.persist(new Receita(receita));
     }
 
     void cadastraDespesa(String descricao, String valor, String data, Categoria categoria){
