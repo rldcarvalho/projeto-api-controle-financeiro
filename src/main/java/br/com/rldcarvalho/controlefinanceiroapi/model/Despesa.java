@@ -42,4 +42,13 @@ public class Despesa {
         this.data = dataFormatada;
         this.categoria = despesaForm.getCategoria();
     }
+
+    public void atualizar(Despesa despesaNova) {
+        this.descricao = despesaNova.descricao;
+        this.valor = despesaNova.valor;
+        this.data = despesaNova.data;
+        if (!despesaNova.categoria.getDescricao().equalsIgnoreCase("Outras")){
+            this.categoria = despesaNova.categoria;
+        }
+    }
 }

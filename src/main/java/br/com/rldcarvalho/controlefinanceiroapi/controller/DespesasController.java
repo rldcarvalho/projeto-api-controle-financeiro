@@ -95,6 +95,7 @@ public class DespesasController {
             return ResponseEntity.badRequest().body("Receita com descrição idêntica existente no mesmo mês.");
         }
 
+        despesaAtual.get().atualizar(despesaNova);
         despesaRepository.save(despesaAtual.get());
 
         return ResponseEntity.ok("Despesa atualizada com sucesso.");
