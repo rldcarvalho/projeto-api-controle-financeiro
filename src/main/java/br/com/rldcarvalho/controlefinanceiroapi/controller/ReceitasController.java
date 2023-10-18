@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.DateTimeException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,15 +39,15 @@ public class ReceitasController {
 
     @GetMapping
     public ResponseEntity<List<ReceitaDto>> buscaReceita(@RequestParam(required = false) String descricao){
-        List<Receita> receitas;
+        Optional<List<Receita>> receitasOptional;
 
         if (descricao == null || descricao.isEmpty()) {
-            receitas = receitaRepository.findAll();
+            receitasOptional = Optional.of(receitaRepository.findAll());
         } else {
-            receitas = receitaRepository.findByDescricaoContaining(descricao);
+            receitasOptional = receitaRepository.findByDescricaoContainingIgnoreCase(descricao);
         }
 
-        List<ReceitaDto> receitasDto = ReceitaService.converterParaDtoList(receitas);
+        List<ReceitaDto> receitasDto = ReceitaService.converterParaDtoList(receitasOptional.orElse(Collections.emptyList()));
 
         return ResponseEntity.ok(receitasDto);
     }

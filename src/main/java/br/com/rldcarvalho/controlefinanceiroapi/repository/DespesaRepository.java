@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface DespesaRepository extends JpaRepository<Despesa, Long> {
 
     Optional<Despesa> findByDescricaoAndDataBetween(String descricao, LocalDate startDate, LocalDate endDate);
-    List<Despesa> findByDescricaoContaining(String descricao);
+    Optional<List<Despesa>> findByDescricaoContainingIgnoreCase(String descricao);
     @Query("SELECT d FROM Despesa d WHERE year(d.data) = :year AND month(d.data) = :month")
     List<Despesa> findAllByMonth(@Param("year") Integer year, @Param("month") Integer month);
     @Query("SELECT SUM(d.valor) FROM Despesa d WHERE year(d.data) = :year AND month(d.data) = :month")
